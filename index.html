@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Math Duels Arena: Meteor & Sword Battle ⚔️☄️</title>
+    <title>Math Duels Arena: Ultimate Math Battle ⚔️☄️</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -30,8 +30,8 @@
         /* Screen Shake Animation on Impact */
         @keyframes arenaShake {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            15% { transform: translate(-10px, 8px) rotate(-1.5deg); }
-            30% { transform: translate(10px, -8px) rotate(1.5deg); }
+            15% { transform: translate(-12px, 8px) rotate(-1.5deg); }
+            30% { transform: translate(12px, -8px) rotate(1.5deg); }
             45% { transform: translate(-8px, 5px) rotate(-1deg); }
             60% { transform: translate(8px, -5px) rotate(1deg); }
             75% { transform: translate(-4px, 2px) rotate(0deg); }
@@ -44,8 +44,8 @@
         /* Floating Damage Text Animation */
         @keyframes damageFloat {
             0% { opacity: 1; transform: translateY(0) scale(0.7); }
-            30% { opacity: 1; transform: translateY(-30px) scale(1.3); }
-            100% { opacity: 0; transform: translateY(-75px) scale(1); }
+            30% { opacity: 1; transform: translateY(-35px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1); }
         }
 
         .floating-damage-txt {
@@ -60,7 +60,7 @@
         /* Avatar Idle Floating */
         @keyframes floatHero {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-7px); }
+            50% { transform: translateY(-8px); }
         }
 
         .animate-float-hero {
@@ -97,35 +97,47 @@
         .combo-badge-glow {
             animation: pulseGlow 0.9s infinite ease-in-out;
         }
+
+        /* Custom Scrollbar for Modal */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col justify-between select-none overflow-hidden bg-slate-950">
 
     <!-- TOP CONTROL & STATUS HEADER -->
-    <header class="bg-slate-900/95 border-b-2 border-slate-800 px-4 py-2 flex items-center justify-between z-30 shadow-xl">
+    <header class="bg-slate-900/95 border-b-2 border-slate-800 px-3 md:px-5 py-2 flex items-center justify-between z-30 shadow-xl">
         <!-- Title & Icon -->
         <div class="flex items-center space-x-2">
-            <span class="text-2xl">☄️⚔️</span>
-            <h1 class="text-lg md:text-2xl font-bungee tracking-wider bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 bg-clip-text text-transparent">
+            <span class="text-xl md:text-2xl">☄️⚔️</span>
+            <h1 class="text-base md:text-2xl font-bungee tracking-wider bg-gradient-to-r from-amber-400 via-orange-400 to-red-500 bg-clip-text text-transparent">
                 MATH DUELS
             </h1>
         </div>
 
-        <!-- Level & Mode Badge -->
+        <!-- Operation & Level Status Badge -->
         <div class="hidden sm:flex items-center space-x-3 bg-slate-950 px-4 py-1 rounded-full border border-slate-700/80 shadow-inner">
             <div class="text-xs text-slate-400">
-                LEVEL: <span id="hdrLevelText" class="font-bold text-amber-400">1 (Satuan 1-9)</span>
+                OPERASI: <span id="hdrOpText" class="font-bold text-cyan-400">Perkalian (×)</span>
             </div>
             <div class="h-3 w-px bg-slate-700"></div>
             <div class="text-xs text-slate-400">
-                MODE: <span id="hdrModeText" class="font-bold text-cyan-400">Adu HP (100)</span>
+                LEVEL: <span id="hdrLevelText" class="font-bold text-amber-400">1 (Satuan)</span>
             </div>
         </div>
 
-        <!-- Round Timer / Infinite Display -->
+        <!-- Timer Display -->
         <div class="bg-amber-500/10 border border-amber-500/40 px-3.5 py-1 rounded-full flex items-center space-x-2">
             <span class="text-amber-400 font-bold text-sm">⏱️</span>
-            <span id="timerDisplay" class="font-bungee text-base md:text-lg text-amber-400">60s</span>
+            <span id="timerDisplay" class="font-bungee text-base md:text-lg text-amber-400">01:00</span>
         </div>
 
         <!-- Utility Buttons -->
@@ -142,10 +154,10 @@
     <!-- MIDDLE VISUAL BATTLE ARENA WITH CANVAS OVERLAY -->
     <main id="battleArena" class="relative flex-1 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-between px-4 sm:px-12 py-2 overflow-hidden border-b-2 border-slate-800">
         
-        <!-- Canvas for Dynamic 60fps Meteors, Flying Swords & Explosion Particles -->
+        <!-- Canvas for 60fps Flying Meteors, Magic Swords & Particle Explosions -->
         <canvas id="fxCanvas" class="absolute inset-0 z-20 pointer-events-none w-full h-full"></canvas>
 
-        <!-- Arena Grid Visual Background -->
+        <!-- Arena Grid Background -->
         <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:28px_28px] opacity-30 pointer-events-none"></div>
 
         <!-- PLAYER 1 (LEFT HERO - RED FLAME KNIGHT) -->
@@ -166,7 +178,7 @@
                 <span id="p1HpText" class="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-bold text-white drop-shadow">100 / 100 HP</span>
             </div>
 
-            <!-- P1 Character Avatar Sprite -->
+            <!-- P1 Avatar Sprite -->
             <div id="p1Avatar" class="relative mt-2 animate-float-hero transition-transform">
                 <svg class="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 drop-shadow-[0_10px_20px_rgba(239,68,68,0.4)]" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r="52" fill="url(#p1Glow)" opacity="0.6"/>
@@ -174,7 +186,7 @@
                     <path d="M 60 30 L 75 55 L 60 85 L 45 55 Z" fill="#f59e0b"/>
                     <rect x="38" y="40" width="44" height="24" rx="6" fill="#0f172a"/>
                     <rect x="43" y="48" width="34" height="6" rx="2" fill="#ef4444"/>
-                    <!-- Sword in hand -->
+                    <!-- Flying Sword Graphic -->
                     <path d="M 92 22 L 108 8 L 114 14 L 98 28 Z" fill="#e2e8f0"/>
                     <path d="M 90 25 L 100 35" stroke="#78716c" stroke-width="4"/>
                     <defs>
@@ -187,7 +199,7 @@
             </div>
         </div>
 
-        <!-- CENTER VS EMBLEM & SCORE -->
+        <!-- CENTER VS EMBLEM & SCOREBOARD -->
         <div class="relative z-10 flex flex-col items-center justify-center">
             <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-red-600 flex items-center justify-center font-bungee text-lg sm:text-2xl border-4 border-slate-900 shadow-2xl text-white italic transform -rotate-6">
                 VS
@@ -221,7 +233,7 @@
                 <span id="p2HpText" class="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-bold text-white drop-shadow">100 / 100 HP</span>
             </div>
 
-            <!-- P2 Character Avatar Sprite -->
+            <!-- P2 Avatar Sprite -->
             <div id="p2Avatar" class="relative mt-2 animate-float-hero transition-transform">
                 <svg class="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 drop-shadow-[0_10px_20px_rgba(6,182,212,0.4)]" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r="52" fill="url(#p2Glow)" opacity="0.6"/>
@@ -229,13 +241,12 @@
                     <path d="M 60 8 L 92 65 L 28 65 Z" fill="#0369a1"/>
                     <path d="M 18 65 C 18 60, 102 60, 102 65 C 102 70, 18 70, 18 65 Z" fill="#0284c7"/>
                     <polygon points="60,24 63,32 71,32 64,37 67,45 60,40 53,45 56,37 49,32 57,32" fill="#facc15"/>
-                    <!-- Wizard Face & Beard -->
+                    <!-- Wizard Face -->
                     <circle cx="60" cy="76" r="18" fill="#fde047"/>
                     <path d="M 44 76 Q 60 106 76 76 Z" fill="#f8fafc"/>
-                    <!-- Eyes -->
                     <circle cx="53" cy="73" r="3" fill="#38bdf8"/>
                     <circle cx="67" cy="73" r="3" fill="#38bdf8"/>
-                    <!-- Magic Staff -->
+                    <!-- Staff -->
                     <path d="M 22 38 L 22 105" stroke="#78350f" stroke-width="5"/>
                     <circle cx="22" cy="33" r="10" fill="#38bdf8"/>
                     <defs>
@@ -263,13 +274,13 @@
 
             <!-- Question Card -->
             <div class="bg-slate-900/90 border-2 border-red-500/40 rounded-xl p-2.5 text-center my-1 shadow-inner">
-                <div class="text-[9px] md:text-[10px] text-red-300/80 font-bold uppercase tracking-wider mb-0.5">Selesaikan Perkalian:</div>
+                <div class="text-[9px] md:text-[10px] text-red-300/80 font-bold uppercase tracking-wider mb-0.5">SOAL SOAL:</div>
                 <div id="p1QuestionText" class="font-bungee text-2xl sm:text-3xl md:text-4xl text-white tracking-wide">
                     8 × 7 = ?
                 </div>
             </div>
 
-            <!-- 4 Answer Option Buttons -->
+            <!-- 4 Multiple Choice Answer Buttons -->
             <div class="grid grid-cols-2 gap-2 mt-1">
                 <button onclick="handleAnswer(1, 0)" id="p1Opt0" class="btn-p1 h-12 sm:h-14 md:h-16 rounded-xl font-bungee text-xl sm:text-2xl text-white flex items-center justify-center border-t border-white/20">56</button>
                 <button onclick="handleAnswer(1, 1)" id="p1Opt1" class="btn-p1 h-12 sm:h-14 md:h-16 rounded-xl font-bungee text-xl sm:text-2xl text-white flex items-center justify-center border-t border-white/20">48</button>
@@ -277,7 +288,7 @@
                 <button onclick="handleAnswer(1, 3)" id="p1Opt3" class="btn-p1 h-12 sm:h-14 md:h-16 rounded-xl font-bungee text-xl sm:text-2xl text-white flex items-center justify-center border-t border-white/20">54</button>
             </div>
 
-            <!-- Stun Lock Overlay -->
+            <!-- Incorrect Answer Stun Overlay -->
             <div id="p1StunOverlay" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center rounded-2xl">
                 <span class="text-3xl animate-bounce">💥</span>
                 <span class="font-bungee text-red-400 text-xs mt-1">SALAH! TERKUNCI 0.8s</span>
@@ -294,13 +305,13 @@
 
             <!-- Question Card -->
             <div class="bg-slate-900/90 border-2 border-cyan-500/40 rounded-xl p-2.5 text-center my-1 shadow-inner">
-                <div class="text-[9px] md:text-[10px] text-cyan-300/80 font-bold uppercase tracking-wider mb-0.5">Selesaikan Perkalian:</div>
+                <div class="text-[9px] md:text-[10px] text-cyan-300/80 font-bold uppercase tracking-wider mb-0.5">SOAL SOAL:</div>
                 <div id="p2QuestionText" class="font-bungee text-2xl sm:text-3xl md:text-4xl text-white tracking-wide">
                     9 × 6 = ?
                 </div>
             </div>
 
-            <!-- 4 Answer Option Buttons -->
+            <!-- 4 Multiple Choice Answer Buttons -->
             <div class="grid grid-cols-2 gap-2 mt-1">
                 <button onclick="handleAnswer(2, 0)" id="p2Opt0" class="btn-p2 h-12 sm:h-14 md:h-16 rounded-xl font-bungee text-xl sm:text-2xl text-white flex items-center justify-center border-t border-white/20">54</button>
                 <button onclick="handleAnswer(2, 1)" id="p2Opt1" class="btn-p2 h-12 sm:h-14 md:h-16 rounded-xl font-bungee text-xl sm:text-2xl text-white flex items-center justify-center border-t border-white/20">45</button>
@@ -308,7 +319,7 @@
                 <button onclick="handleAnswer(2, 3)" id="p2Opt3" class="btn-p2 h-12 sm:h-14 md:h-16 rounded-xl font-bungee text-xl sm:text-2xl text-white flex items-center justify-center border-t border-white/20">36</button>
             </div>
 
-            <!-- Stun Lock Overlay -->
+            <!-- Incorrect Answer Stun Overlay -->
             <div id="p2StunOverlay" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center rounded-2xl">
                 <span class="text-3xl animate-bounce">⚡</span>
                 <span class="font-bungee text-cyan-400 text-xs mt-1">SALAH! TERKUNCI 0.8s</span>
@@ -317,66 +328,111 @@
 
     </div>
 
-    <!-- SETUP / LEVEL MODAL -->
-    <div id="setupModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl p-5 md:p-6 max-w-md w-full shadow-2xl relative">
-            <h2 class="font-bungee text-2xl text-amber-400 text-center mb-4 flex items-center justify-center gap-2">
-                ⚙️ PENGATURAN ARENA
+    <!-- SETUP / LEVEL & CUSTOM TIMER MODAL -->
+    <div id="setupModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-3 md:p-4">
+        <div class="bg-slate-900 border-2 border-amber-500/60 rounded-3xl p-4 md:p-6 max-w-lg w-full shadow-2xl relative max-h-[92vh] overflow-y-auto">
+            
+            <h2 class="font-bungee text-xl md:text-2xl text-amber-400 text-center mb-3 flex items-center justify-center gap-2">
+                ⚙️ PENGATURAN ARENA BERTARUNG
             </h2>
 
-            <!-- Level Selector -->
+            <!-- 1. OPERASI MATEMATIKA SELECTOR -->
             <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">TENTUKAN KESULITAN PERKALIAN:</label>
-                <div class="space-y-2">
-                    <button onclick="selectLevel(1)" id="lvlBtn1" class="w-full p-2.5 rounded-xl border-2 border-amber-500 bg-amber-500/10 text-left flex items-center justify-between font-bold text-amber-300">
-                        <div>
-                            <div class="text-xs sm:text-sm">LEVEL 1: Perkalian Satuan</div>
-                            <div class="text-[10px] text-slate-400">Contoh: 1x1 sampai 9x9 (Dasar Anak)</div>
-                        </div>
-                        <span class="text-lg">🌟</span>
+                <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">1. PILIH OPERASI MATEMATIKA:</label>
+                <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+                    <button onclick="selectOperation('add')" id="opBtn_add" class="py-2 px-1 rounded-xl border-2 border-slate-700 bg-slate-800 text-center font-bold text-xs text-slate-300 hover:border-slate-500">
+                        <div class="text-base">➕</div>
+                        <div>Tambah</div>
                     </button>
-
-                    <button onclick="selectLevel(2)" id="lvlBtn2" class="w-full p-2.5 rounded-xl border-2 border-slate-700 bg-slate-800 text-left flex items-center justify-between font-bold text-slate-300 hover:border-slate-500">
-                        <div>
-                            <div class="text-xs sm:text-sm">LEVEL 2: Perkalian Puluhan</div>
-                            <div class="text-[10px] text-slate-400">Contoh: 10x1 sampai 12x10</div>
-                        </div>
-                        <span class="text-lg">🔥</span>
+                    <button onclick="selectOperation('sub')" id="opBtn_sub" class="py-2 px-1 rounded-xl border-2 border-slate-700 bg-slate-800 text-center font-bold text-xs text-slate-300 hover:border-slate-500">
+                        <div class="text-base">➖</div>
+                        <div>Kurang</div>
                     </button>
-
-                    <button onclick="selectLevel(3)" id="lvlBtn3" class="w-full p-2.5 rounded-xl border-2 border-slate-700 bg-slate-800 text-left flex items-center justify-between font-bold text-slate-300 hover:border-slate-500">
-                        <div>
-                            <div class="text-xs sm:text-sm">LEVEL 3: Perkalian 2 Angka</div>
-                            <div class="text-[10px] text-slate-400">Contoh: 11x2 sampai 25x15 (Tantangan Cepat)</div>
-                        </div>
-                        <span class="text-lg">💀</span>
+                    <button onclick="selectOperation('mul')" id="opBtn_mul" class="py-2 px-1 rounded-xl border-2 border-amber-500 bg-amber-500/10 text-center font-bold text-xs text-amber-300">
+                        <div class="text-base">✖️</div>
+                        <div>Kali</div>
                     </button>
-
-                    <button onclick="selectLevel(4)" id="lvlBtn4" class="w-full p-2.5 rounded-xl border-2 border-slate-700 bg-slate-800 text-left flex items-center justify-between font-bold text-slate-300 hover:border-slate-500">
-                        <div>
-                            <div class="text-xs sm:text-sm">LEVEL 4: Campuran Acak</div>
-                            <div class="text-[10px] text-slate-400">Kombinasi Satuan hingga 2 Angka</div>
-                        </div>
-                        <span class="text-lg">🎲</span>
+                    <button onclick="selectOperation('div')" id="opBtn_div" class="py-2 px-1 rounded-xl border-2 border-slate-700 bg-slate-800 text-center font-bold text-xs text-slate-300 hover:border-slate-500">
+                        <div class="text-base">➗</div>
+                        <div>Bagi</div>
+                    </button>
+                    <button onclick="selectOperation('mix')" id="opBtn_mix" class="py-2 px-1 rounded-xl border-2 border-slate-700 bg-slate-800 text-center font-bold text-xs text-slate-300 hover:border-slate-500 col-span-2 sm:col-span-1">
+                        <div class="text-base">🎲</div>
+                        <div>Campur</div>
                     </button>
                 </div>
             </div>
 
-            <!-- Mode Selector -->
+            <!-- 2. LEVEL KESULITAN SELECTOR -->
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">2. PILIH LEVEL KESULITAN:</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="selectLevel(1)" id="lvlBtn1" class="p-2 rounded-xl border-2 border-amber-500 bg-amber-500/10 text-left font-bold text-xs text-amber-300">
+                        <div>🌟 Level 1: Satuan</div>
+                        <div class="text-[10px] text-slate-400 font-normal">Angka 1-9 (Dasar Anak)</div>
+                    </button>
+                    <button onclick="selectLevel(2)" id="lvlBtn2" class="p-2 rounded-xl border-2 border-slate-700 bg-slate-800 text-left font-bold text-xs text-slate-300 hover:border-slate-500">
+                        <div>🔥 Level 2: Belasan</div>
+                        <div class="text-[10px] text-slate-400 font-normal">Angka 10-20</div>
+                    </button>
+                    <button onclick="selectLevel(3)" id="lvlBtn3" class="p-2 rounded-xl border-2 border-slate-700 bg-slate-800 text-left font-bold text-xs text-slate-300 hover:border-slate-500">
+                        <div>💀 Level 3: 2 Angka</div>
+                        <div class="text-[10px] text-slate-400 font-normal">Angka 11-50</div>
+                    </button>
+                    <button onclick="selectLevel(4)" id="lvlBtn4" class="p-2 rounded-xl border-2 border-slate-700 bg-slate-800 text-left font-bold text-xs text-slate-300 hover:border-slate-500">
+                        <div>🏆 Level 4: Master</div>
+                        <div class="text-[10px] text-slate-400 font-normal">Tantangan Cepat Lengkap</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. PENGATURAN WAKTU BEBAS (CUSTOM TIMER CONTROL) -->
+            <div class="mb-4 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-bold text-amber-300 uppercase tracking-wider">3. PENGATURAN WAKTU BERTARUNG:</label>
+                    <span id="customTimeDisplay" class="font-bungee text-base text-amber-400 bg-amber-500/20 px-2.5 py-0.5 rounded-lg border border-amber-500/40">
+                        01:00 (60s)
+                    </span>
+                </div>
+
+                <!-- Interactive Time Slider -->
+                <div class="space-y-2">
+                    <input type="range" id="timeSlider" min="10" max="600" step="10" value="60" oninput="updateTimeSlider(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                    <div class="flex justify-between text-[10px] text-slate-500 font-bold">
+                        <span>10 Detik</span>
+                        <span>1 Menit</span>
+                        <span>3 Menit</span>
+                        <span>5 Menit</span>
+                        <span>10 Menit</span>
+                    </div>
+                </div>
+
+                <!-- Quick Preset Timer Buttons -->
+                <div class="grid grid-cols-6 gap-1 mt-3">
+                    <button onclick="setQuickTime(30)" class="py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[10px] border border-slate-700">30s</button>
+                    <button onclick="setQuickTime(60)" class="py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[10px] border border-slate-700">60s</button>
+                    <button onclick="setQuickTime(90)" class="py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[10px] border border-slate-700">90s</button>
+                    <button onclick="setQuickTime(120)" class="py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[10px] border border-slate-700">2 Mins</button>
+                    <button onclick="setQuickTime(180)" class="py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[10px] border border-slate-700">3 Mins</button>
+                    <button onclick="setQuickTime(300)" class="py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[10px] border border-slate-700">5 Mins</button>
+                </div>
+            </div>
+
+            <!-- 4. MODE PERTANDINGAN SELECTOR -->
             <div class="mb-5">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">MODE PERTANDINGAN:</label>
+                <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">4. MODE PERTANDINGAN:</label>
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="selectMode('hp')" id="modeBtnHp" class="p-2.5 rounded-xl border-2 border-cyan-500 bg-cyan-500/10 font-bold text-xs text-cyan-300 text-center">
-                        ⚔️ ADU HP (100 HP)
+                        ⚔️ MODE KNOCKOUT (HP 100)
                     </button>
                     <button onclick="selectMode('time')" id="modeBtnTime" class="p-2.5 rounded-xl border-2 border-slate-700 bg-slate-800 font-bold text-xs text-slate-300 text-center hover:border-slate-500">
-                        ⏱️ ADU WAKTU (60s)
+                        ⏱️ MODE ADU SKOR WAKTU
                     </button>
                 </div>
             </div>
 
             <!-- Start Game Button -->
-            <button onclick="startNewGame()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 font-bungee text-lg text-slate-950 shadow-lg hover:brightness-110 transition transform active:scale-95">
+            <button onclick="startNewGame()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 font-bungee text-base md:text-lg text-slate-950 shadow-lg hover:brightness-110 transition transform active:scale-95">
                 MULAI PERTANDINGAN! 🚀
             </button>
         </div>
@@ -390,7 +446,7 @@
             <h2 id="winnerText" class="font-bungee text-2xl sm:text-3xl bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent mb-1">
                 PEMAIN 1 MENANG!
             </h2>
-            <p id="winnerSubtext" class="text-xs text-slate-400 font-bold mb-5">JUARA MATH DUELS METEOR & SWORD</p>
+            <p id="winnerSubtext" class="text-xs text-slate-400 font-bold mb-5">JUARA MATH DUELS ARENA</p>
 
             <!-- Final Battle Statistics -->
             <div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-2xl border border-slate-800 mb-5 text-left">
@@ -423,7 +479,7 @@
     </div>
 
     <script>
-        // WEB AUDIO API SYNTHESIZER (NO EXTERNAL AUDIO FILES NEEDED)
+        // WEB AUDIO API SYNTHESIZER
         let audioCtx = null;
         let isMuted = false;
 
@@ -515,7 +571,7 @@
             document.getElementById('soundToggleBtn').innerHTML = isMuted ? '🔇 <span class="hidden md:inline">Mute</span>' : '🔊 <span class="hidden md:inline">Suara</span>';
         }
 
-        // 60FPS CANVAS PROJECTILE & PARTICLE SYSTEM
+        // 60FPS CANVAS PROJECTILE & PARTICLE ENGINE
         const canvas = document.getElementById('fxCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -528,7 +584,6 @@
         }
         window.addEventListener('resize', resizeCanvas);
 
-        // Projectile Class (Sword or Meteor)
         class Projectile {
             constructor(startX, startY, targetX, targetY, type, attackerId, damage, isCritical) {
                 this.x = startX;
@@ -538,17 +593,14 @@
                 this.targetX = targetX;
                 this.targetY = targetY;
                 this.type = type; // 'sword' or 'meteor'
-                this.attackerId = attackerId; // 1 or 2
+                this.attackerId = attackerId;
                 this.damage = damage;
                 this.isCritical = isCritical;
                 
                 this.progress = 0;
-                this.speed = isCritical ? 0.035 : 0.025; // Speed of trajectory
-
-                // Angle towards target
+                this.speed = isCritical ? 0.038 : 0.026;
                 this.angle = Math.atan2(targetY - startY, targetX - startX);
                 
-                // Color theme
                 this.color = attackerId === 1 ? '#ef4444' : '#06b6d4';
                 this.secondaryColor = attackerId === 1 ? '#f59e0b' : '#38bdf8';
             }
@@ -569,10 +621,9 @@
                     ));
                 }
 
-                // Check collision at destination
                 if (this.progress >= 1) {
                     this.onHit();
-                    return false; // Remove projectile
+                    return false;
                 }
                 return true;
             }
@@ -582,15 +633,12 @@
                 ctx.translate(this.x, this.y);
 
                 if (this.type === 'sword') {
-                    // Draw Flying Sword
                     ctx.rotate(this.angle + Math.PI / 4);
                     const size = this.isCritical ? 28 : 20;
 
-                    // Sword Glow
                     ctx.shadowColor = this.color;
                     ctx.shadowBlur = 15;
 
-                    // Blade
                     ctx.fillStyle = '#f8fafc';
                     ctx.beginPath();
                     ctx.moveTo(0, -size);
@@ -600,15 +648,11 @@
                     ctx.closePath();
                     ctx.fill();
 
-                    // Guard & Hilt
                     ctx.fillStyle = this.color;
                     ctx.fillRect(-size / 2, size / 3, size, 4);
 
                 } else {
-                    // Draw Flying Meteor
                     const radius = this.isCritical ? 24 : 16;
-
-                    // Burning Meteor Core
                     const gradient = ctx.createRadialGradient(0, 0, 2, 0, 0, radius);
                     gradient.addColorStop(0, '#ffffff');
                     gradient.addColorStop(0.4, this.secondaryColor);
@@ -627,15 +671,12 @@
             }
 
             onHit() {
-                // Play Explosion SFX
                 playSound('explosion');
 
-                // Trigger Screen Shake
                 const arena = document.getElementById('battleArena');
                 arena.classList.add('animate-impact-shake');
                 setTimeout(() => arena.classList.remove('animate-impact-shake'), 400);
 
-                // Spawn Explosion Particles
                 const particleCount = this.isCritical ? 40 : 25;
                 for (let i = 0; i < particleCount; i++) {
                     particles.push(new Particle(
@@ -647,15 +688,12 @@
                     ));
                 }
 
-                // Show Damage Float Text
                 const defenderId = this.attackerId === 1 ? 2 : 1;
                 spawnFloatingDamage(defenderId, this.damage, this.isCritical);
 
-                // Apply Damage to Opponent State
                 players[defenderId].hp = Math.max(0, players[defenderId].hp - this.damage);
                 updateHpBars();
 
-                // Check Knockout
                 if (players[defenderId].hp <= 0) {
                     players[this.attackerId].score++;
                     updateScoreText();
@@ -663,7 +701,6 @@
                     if (selectedMode === 'hp') {
                         endGame(this.attackerId);
                     } else {
-                        // Reset opponent HP for Time Attack Mode
                         players[defenderId].hp = 100;
                         updateHpBars();
                     }
@@ -671,7 +708,6 @@
             }
         }
 
-        // Particle Class for Trail & Explosions
         class Particle {
             constructor(x, y, color1, color2, mode) {
                 this.x = x;
@@ -687,7 +723,7 @@
                     this.radius = Math.random() * 6 + 3;
                     this.life = 1.0;
                     this.decay = Math.random() * 0.04 + 0.02;
-                } else { // Trail
+                } else {
                     this.vx = (Math.random() - 0.5) * 2;
                     this.vy = (Math.random() - 0.5) * 2;
                     this.radius = Math.random() * 5 + 2;
@@ -714,15 +750,12 @@
             }
         }
 
-        // Main FX Animation Render Loop
         function animateFX() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Update & Render Projectiles
             projectiles = projectiles.filter(p => p.update());
             projectiles.forEach(p => p.draw());
 
-            // Update & Render Particles
             particles = particles.filter(p => p.update());
             particles.forEach(p => p.draw());
 
@@ -730,8 +763,10 @@
         }
 
         // GAME STATE & CONFIGURATION
-        let selectedLevel = 1;
+        let selectedOperation = 'mul'; // 'add', 'sub', 'mul', 'div', 'mix'
+        let selectedLevel = 1; // 1, 2, 3, 4
         let selectedMode = 'hp'; // 'hp' or 'time'
+        let durationSeconds = 60; // Custom time in seconds
         let timerInterval = null;
         let timeRemaining = 60;
         let isGameActive = false;
@@ -745,61 +780,111 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // Math Problem Generator for Levels 1 to 4
-        function generateQuestion(level) {
-            let num1, num2;
+        // Format seconds to MM:SS
+        function formatTimeMMSS(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+        }
 
-            let activeLvl = level;
-            if (level === 4) activeLvl = getRandomInt(1, 3); // Mix mode
+        // Math Problem Generator supporting all operations
+        function generateQuestion(opType, level) {
+            let num1, num2, answer, symbol;
 
-            if (activeLvl === 1) {
-                // Level 1: Satuan (1x1 to 9x9)
-                num1 = getRandomInt(1, 9);
-                num2 = getRandomInt(1, 9);
-            } else if (activeLvl === 2) {
-                // Level 2: Puluhan Dasar (10x1 to 12x10)
-                if (Math.random() > 0.5) {
-                    num1 = getRandomInt(10, 12);
-                    num2 = getRandomInt(1, 10);
-                } else {
-                    num1 = getRandomInt(1, 10);
-                    num2 = getRandomInt(10, 12);
-                }
-            } else {
-                // Level 3: 2-Digit Variations (11x2 to 25x15)
-                num1 = getRandomInt(11, 25);
-                num2 = getRandomInt(2, 15);
+            let activeOp = opType;
+            if (opType === 'mix') {
+                const ops = ['add', 'sub', 'mul', 'div'];
+                activeOp = ops[getRandomInt(0, 3)];
             }
 
-            const answer = num1 * num2;
+            let activeLvl = level;
+            if (level === 4) activeLvl = getRandomInt(1, 3);
 
-            // Generate 3 unique distractors near the correct answer
+            if (activeOp === 'add') {
+                symbol = '+';
+                if (activeLvl === 1) { num1 = getRandomInt(1, 9); num2 = getRandomInt(1, 9); }
+                else if (activeLvl === 2) { num1 = getRandomInt(10, 25); num2 = getRandomInt(5, 20); }
+                else { num1 = getRandomInt(20, 99); num2 = getRandomInt(15, 85); }
+                answer = num1 + num2;
+
+            } else if (activeOp === 'sub') {
+                symbol = '-';
+                if (activeLvl === 1) { num1 = getRandomInt(2, 10); num2 = getRandomInt(1, num1); }
+                else if (activeLvl === 2) { num1 = getRandomInt(15, 30); num2 = getRandomInt(5, num1); }
+                else { num1 = getRandomInt(30, 100); num2 = getRandomInt(10, num1); }
+                answer = num1 - num2;
+
+            } else if (activeOp === 'div') {
+                symbol = '÷';
+                // Clean Integer Division without decimals
+                let divisor, quotient;
+                if (activeLvl === 1) { divisor = getRandomInt(1, 9); quotient = getRandomInt(1, 9); }
+                else if (activeLvl === 2) { divisor = getRandomInt(2, 10); quotient = getRandomInt(5, 12); }
+                else { divisor = getRandomInt(3, 15); quotient = getRandomInt(8, 20); }
+                
+                num1 = divisor * quotient;
+                num2 = divisor;
+                answer = quotient;
+
+            } else { // 'mul'
+                symbol = '×';
+                if (activeLvl === 1) { num1 = getRandomInt(1, 9); num2 = getRandomInt(1, 9); }
+                else if (activeLvl === 2) { num1 = getRandomInt(10, 12); num2 = getRandomInt(1, 10); }
+                else { num1 = getRandomInt(11, 25); num2 = getRandomInt(2, 15); }
+                answer = num1 * num2;
+            }
+
+            // Distractor options generator
             let options = new Set();
             options.add(answer);
 
             while (options.size < 4) {
-                let delta = getRandomInt(-12, 12);
+                let delta = getRandomInt(-10, 10);
                 if (delta === 0) delta = 2;
                 let wrongOpt = answer + delta;
-                if (wrongOpt > 0 && wrongOpt !== answer) {
+                if (wrongOpt >= 0 && wrongOpt !== answer) {
                     options.add(wrongOpt);
                 }
             }
 
             let optionsArray = Array.from(options).sort(() => Math.random() - 0.5);
 
-            return { num1, num2, answer, options: optionsArray };
+            return { num1, num2, symbol, answer, options: optionsArray };
         }
 
-        // Setup & Mode Selection Handlers
+        // Custom Timer Controls
+        function updateTimeSlider(val) {
+            durationSeconds = parseInt(val);
+            const textDisplay = `${formatTimeMMSS(durationSeconds)} (${durationSeconds}s)`;
+            document.getElementById('customTimeDisplay').innerText = textDisplay;
+        }
+
+        function setQuickTime(sec) {
+            document.getElementById('timeSlider').value = sec;
+            updateTimeSlider(sec);
+        }
+
+        // Operation & Level Selection UI Handlers
+        function selectOperation(op) {
+            selectedOperation = op;
+            ['add', 'sub', 'mul', 'div', 'mix'].forEach(item => {
+                const btn = document.getElementById(`opBtn_${item}`);
+                if (item === op) {
+                    btn.className = "py-2 px-1 rounded-xl border-2 border-amber-500 bg-amber-500/10 text-center font-bold text-xs text-amber-300";
+                } else {
+                    btn.className = "py-2 px-1 rounded-xl border-2 border-slate-700 bg-slate-800 text-center font-bold text-xs text-slate-300 hover:border-slate-500";
+                }
+            });
+        }
+
         function selectLevel(lvl) {
             selectedLevel = lvl;
             [1, 2, 3, 4].forEach(i => {
                 const btn = document.getElementById(`lvlBtn${i}`);
                 if (i === lvl) {
-                    btn.className = "w-full p-2.5 rounded-xl border-2 border-amber-500 bg-amber-500/10 text-left flex items-center justify-between font-bold text-amber-300";
+                    btn.className = "p-2 rounded-xl border-2 border-amber-500 bg-amber-500/10 text-left font-bold text-xs text-amber-300";
                 } else {
-                    btn.className = "w-full p-2.5 rounded-xl border-2 border-slate-700 bg-slate-800 text-left flex items-center justify-between font-bold text-slate-300 hover:border-slate-500";
+                    btn.className = "p-2 rounded-xl border-2 border-slate-700 bg-slate-800 text-left font-bold text-xs text-slate-300 hover:border-slate-500";
                 }
             });
         }
@@ -832,18 +917,19 @@
             document.getElementById('setupModal').classList.add('hidden');
             document.getElementById('victoryModal').classList.add('hidden');
 
-            // Reset Player Objects
+            // Reset Players
             players = {
                 1: { hp: 100, score: 0, streak: 0, maxStreak: 0, correct: 0, total: 0, question: null, isStunned: false },
                 2: { hp: 100, score: 0, streak: 0, maxStreak: 0, correct: 0, total: 0, question: null, isStunned: false }
             };
 
-            // Header Texts
-            const lvlNames = { 1: "1 (Satuan 1-9)", 2: "2 (Puluhan 10-12)", 3: "3 (2 Angka)", 4: "4 (Campuran)" };
+            // Update Header Information
+            const opNames = { 'add': 'Penjumlahan (+)', 'sub': 'Pengurangan (-)', 'mul': 'Perkalian (×)', 'div': 'Pembagian (÷)', 'mix': 'Campuran (🎲)' };
+            const lvlNames = { 1: "1 (Satuan)", 2: "2 (Belasan)", 3: "3 (2 Angka)", 4: "4 (Master)" };
+            
+            document.getElementById('hdrOpText').innerText = opNames[selectedOperation];
             document.getElementById('hdrLevelText').innerText = lvlNames[selectedLevel];
-            document.getElementById('hdrModeText').innerText = selectedMode === 'hp' ? 'Adu HP (100)' : 'Adu Waktu (60s)';
 
-            // Reset UI Visuals
             updateHpBars();
             updateScoreText();
             document.getElementById('p1ComboBadge').classList.add('hidden');
@@ -854,34 +940,33 @@
 
             isGameActive = true;
 
-            // Timer Initialization
+            // Timer Engine with Custom Duration
             clearInterval(timerInterval);
-            if (selectedMode === 'time') {
-                timeRemaining = 60;
-                document.getElementById('timerDisplay').innerText = `${timeRemaining}s`;
-                timerInterval = setInterval(() => {
-                    if (!isGameActive) return;
-                    timeRemaining--;
-                    document.getElementById('timerDisplay').innerText = `${timeRemaining}s`;
-                    if (timeRemaining <= 0) endGameByTimeout();
-                }, 1000);
-            } else {
-                document.getElementById('timerDisplay').innerText = '∞';
-            }
+            timeRemaining = durationSeconds;
+            document.getElementById('timerDisplay').innerText = formatTimeMMSS(timeRemaining);
+
+            timerInterval = setInterval(() => {
+                if (!isGameActive) return;
+                timeRemaining--;
+                document.getElementById('timerDisplay').innerText = formatTimeMMSS(timeRemaining);
+
+                if (timeRemaining <= 0) {
+                    endGameByTimeout();
+                }
+            }, 1000);
         }
 
         function loadQuestionForPlayer(pId) {
-            const q = generateQuestion(selectedLevel);
+            const q = generateQuestion(selectedOperation, selectedLevel);
             players[pId].question = q;
 
-            document.getElementById(`p${pId}QuestionText`).innerText = `${q.num1} × ${q.num2} = ?`;
+            document.getElementById(`p${pId}QuestionText`).innerText = `${q.num1} ${q.symbol} ${q.num2} = ?`;
 
             q.options.forEach((optVal, idx) => {
                 document.getElementById(`p${pId}Opt${idx}`).innerText = optVal;
             });
         }
 
-        // ANSWER SELECTION & ATTACK LAUNCH ENGINE
         function handleAnswer(pId, optionIndex) {
             if (!isGameActive) return;
             const p = players[pId];
@@ -893,7 +978,6 @@
             const defenderId = pId === 1 ? 2 : 1;
 
             if (selectedAns === p.question.answer) {
-                // --- CORRECT ANSWER ---
                 p.correct++;
                 p.streak++;
                 if (p.streak > p.maxStreak) p.maxStreak = p.streak;
@@ -901,27 +985,21 @@
                 const isCritical = p.streak >= 3;
                 const damage = isCritical ? 30 : 15;
 
-                // Combo Badge
                 const comboBadge = document.getElementById(`p${pId}ComboBadge`);
                 if (p.streak >= 3) {
                     comboBadge.innerText = `${p.streak}x KOMBO!`;
                     comboBadge.classList.remove('hidden');
                 }
 
-                // Launch Animated Canvas Projectile (Sword or Meteor)
                 launchAttackProjectile(pId, defenderId, damage, isCritical);
-
-                // Refresh Question
                 loadQuestionForPlayer(pId);
 
             } else {
-                // --- INCORRECT ANSWER ---
                 p.streak = 0;
                 document.getElementById(`p${pId}ComboBadge`).classList.add('hidden');
 
                 playSound('wrong');
 
-                // Stun Player for 0.8s
                 p.isStunned = true;
                 const overlay = document.getElementById(`p${pId}StunOverlay`);
                 overlay.classList.remove('hidden');
@@ -943,19 +1021,15 @@
             const defRect = defenderAvatar.getBoundingClientRect();
             const arenaRect = canvas.getBoundingClientRect();
 
-            // Calculate start and target coordinates inside Canvas
             const startX = attRect.left + attRect.width / 2 - arenaRect.left;
             const startY = attRect.top + attRect.height / 2 - arenaRect.top;
             const targetX = defRect.left + defRect.width / 2 - arenaRect.left;
             const targetY = defRect.top + defRect.height / 2 - arenaRect.top;
 
-            // Randomly choose attack weapon type: 'meteor' or 'sword'
             const attackType = Math.random() > 0.5 ? 'meteor' : 'sword';
 
-            // Play Sound Effect
             playSound(attackType === 'sword' ? 'swordLaunch' : 'meteorLaunch');
 
-            // Add Projectile to Canvas Engine
             projectiles.push(new Projectile(
                 startX, startY, targetX, targetY,
                 attackType, attackerId, damage, isCritical
@@ -999,7 +1073,6 @@
             document.getElementById('p2ScoreText').innerText = players[2].score;
         }
 
-        // GAME OVER & VICTORY MODAL LOGIC
         function endGame(winnerId) {
             isGameActive = false;
             clearInterval(timerInterval);
@@ -1019,7 +1092,6 @@
                 winnerText.className = "font-bungee text-2xl sm:text-3xl text-amber-400 mb-1";
             }
 
-            // Stats Breakdown
             [1, 2].forEach(id => {
                 const p = players[id];
                 const acc = p.total > 0 ? Math.round((p.correct / p.total) * 100) : 0;
@@ -1028,7 +1100,7 @@
                 document.getElementById(`p${id}StatCombo`).innerText = `${p.maxStreak}x`;
             });
 
-            // Trigger Victory Fireworks
+            // Victory particle fireworks
             for (let i = 0; i < 60; i++) {
                 particles.push(new Particle(
                     canvas.width / 2 + (Math.random() - 0.5) * 200,
@@ -1054,7 +1126,6 @@
             }
         }
 
-        // Initialize Canvas & Modal on window load
         window.onload = function() {
             resizeCanvas();
             animateFX();
